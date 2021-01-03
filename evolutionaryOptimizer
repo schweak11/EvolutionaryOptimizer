@@ -1,0 +1,102 @@
+import java.io.*;
+
+public class evolutionaryOptimizer{
+  
+  //number of parameters to be optimized
+  static int n=2;
+  
+  //parameter array
+  static double[] parameters=new double[n];
+  
+  //corrector array - order of magnitude of change for each parameter
+  static double[] corrector=new double[n];
+  
+  //maximum/minimum correctors
+  static double minimumScatter=0.001;
+  static double maximumScatter=10;
+     
+  static double runs=100000;
+  
+  
+  //function to optimize
+  public static double function(){
+    return (parameters[0]-1)*(parameters[0]-1) + (parameters[1]-2.77)*(parameters[1]-2.77);
+  }
+  
+  
+  
+  //Main Method 
+  public static void main(String[] args){
+     
+    initialize();
+      
+    for(int iter=0; iter<=runs; iter++){
+      randChange();
+    }
+    outputResults();
+  }
+  
+  
+  //Sub Methods
+  
+  public static void initialize(){
+    for(int i=0; i<n; i++){
+      parameters[i]=Math.random();
+      corrector[i]=1;
+    }
+  }
+  
+  
+  public static void randChange(){
+      
+    double fun1, fun2, originalNumber;
+    int changeNumberI=(int) (Math.random()*n);
+    
+    //save mother
+    fun1=function();
+    originalNumber=parameters[changeNumberI];
+    
+    //create daughter
+    if(Math.random()>0.5){parameters[changeNumberI]+=Math.random()*corrector[changeNumberI];}
+    else{parameters[changeNumberI]-=Math.random()*corrector[changeNumberI];}
+    
+    fun2=function();
+    
+    //daughter is smaller than mother -> minimization success
+    if(fun2<=fun1){
+      if(corrector[changeNumberI]<maximumScatter){corrector[changeNumberI]*=10;}
+    }
+    
+    //mother is smaller than daughter -> minimization failure
+    else{
+      parameters[changeNumberI]=originalNumber;
+      if(corrector[changeNumberI]>minimumScatter){corrector[changeNumberI]/=10;}
+    }
+    
+  }
+  
+  
+  public static void outputResults(){
+    
+    try{
+      FileWriter outStream = new FileWriter("Results.txt", true);
+      PrintWriter outs = new PrintWriter(outStream);
+          
+      outs.println("Parameter_index Parameter_value");
+      for(int i=0; i<n; i++){
+        outs.println(i + " " + parameters[i]);  
+      }
+      outs.println("Function_value " + function());
+           
+      outs.close();
+      outStream.close();
+    }
+    catch(IOException exc){
+      System.out.println("Problem writing to Results.txt");
+    }
+    System.out.println("Results.txt completed");
+      
+  }
+
+
+}
