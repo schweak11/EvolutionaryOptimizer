@@ -1,0 +1,29 @@
+Solve the equation 2x³+3x²–11x–6=0
+We would like to minimize the difference between the right and the left side of the equation. That can be done by minimizing the absolute value of  2x³+3x²–11x–6.
+Replace the function to optimize (line 23) by 
+return Math.abs(2*parameters[0]*parameters[0]*parameters[0] + 3*parameters[0]*parameters[0] - 11*parameters[0] - 6);
+and change the number of parameters (line 6) to 1.
+Running the program several times should deliver all three solutions 2, -3 and -0.5.
+
+
+Fit a line through the data points
+x y
+1 3.86
+2 6.47
+3 8.07
+4 8.21
+5 11.45
+6 11.76
+7 13.46
+8 14.28
+9 15.74
+10 18.35
+We would like to minimize the mean square deviation of each point from the assumed function y=m*x+b. Mathematically, we calculate (y-m*x+b)² for each point and minimize the sum.
+Replace the function to optimize (line 23) by 
+double[] x={1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+double[] y={3.86, 6.47, 8.07, 8.21, 11.45, 11.76, 13.46, 14.28, 15.74, 18.35};
+double sum=0;
+for(int i=0; i<10; i++){sum+=(y[i]-(parameters[0]*x[i]+parameters[1]))*(y[i]-(parameters[0]*x[i]+parameters[1]));}
+return sum;
+and change the number of parameters (line 6) to 2.
+Running the program should return a slope (parameters[0]) of 1.47 and a y-intercept (parameters[1]) of 3.08. Notice that you can fit any function this way.
